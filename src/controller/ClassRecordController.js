@@ -23,7 +23,7 @@ class ClassRecordController {
   static async listClassRecordsFromGroup(req, res) {
     try {
       const group = req.query.id;
-      const matchingRecords = await classRecord.find({ group: group }).poopulate("group");
+      const matchingRecords = await classRecord.find({ group: group }).populate("group").exec();
       res.status(200).json(matchingRecords);
     } catch (error) {
       res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
