@@ -1,73 +1,92 @@
+import NotFound from "../errors/NotFound.js";
 import { classRecord } from "../models/ClassRecord.js";
 
 class ClassRecordController {
-  static async listClassRecords(req, res) {
+  static async listClassRecords(req, res, next) {
     try {
       const classRecords = await classRecord.find({}).populate("author").exec();
       res.status(200).json(classRecords);
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async listClassRecordById(req, res) {
+  static async listClassRecordById(req, res, next) {
     try {
       const id = req.params.id;
       const foundClassRecord = await classRecord.findById(id).populate("author").exec();
-      res.status(200).json(foundClassRecord);
+
+      if(foundClassRecord !== null) {
+        res.status(200).json(foundClassRecord);
+      } else {
+        next(new NotFound("Id not found"));
+      }
+
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async listClassRecordsFromGroup(req, res) {
+  static async listClassRecordsFromGroup(req, res, next) {
     try {
       const group = req.query.id;
       const matchingRecords = await classRecord.find({ group: group }).populate("group").exec();
-      res.status(200).json(matchingRecords);
+
+      if(Array.isArray(matchingRecords) && matchingRecords.length === 0) {
+        next(new NotFound("No matching class records were found"));
+      } else {
+        res.status(200).json(matchingRecords);
+      }
+      
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async listClassRecordsFromAuthor(req, res) {
+  static async listClassRecordsFromAuthor(req, res, next) {
     try {
       const author = req.query.id;
       const matchingRecords = await classRecord.find({ author: author });
-      res.status(200).json(matchingRecords);
+
+      if(Array.isArray(matchingRecords) && matchingRecords.length === 0) {
+        next(new NotFound("No matching class records were found"));
+      } else {
+        res.status(200).json(matchingRecords);
+      }
+
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async createClassRecord(req, res) {
+  static async createClassRecord(req, res, next) {
     try {
       const newClassRecord = await classRecord.create(req.body);
       res.status(201).json({ message: "Created successfully", classRecord: newClassRecord }); 
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't create` });
+      next(error);
     }
   }
 
-  static async updateClassRecord(req, res) {
+  static async updateClassRecord(req, res, next) {
     try {
       const id = req.params.id;
       await classRecord.findByIdAndUpdate(id, req.body);
       const updatedClassRecord = await classRecord.findById(id);
       res.status(200).json({ message: "ClassRecord updated", updatedClassRecord: updatedClassRecord });
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't update` });
+      next(error);
     }
   }
 
-  static async deleteClassRecord(req, res) {
+  static async deleteClassRecord(req, res, next) {
     try {
       const id = req.params.id;
       const deletedClassRecord = await classRecord.findById(id);
       await classRecord.findByIdAndDelete(id);
       res.status(200).json({ message: "ClassRecord deleted", deletedClassRecord: deletedClassRecord });
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't delete` });
+      next(error);
     }
   }
 }

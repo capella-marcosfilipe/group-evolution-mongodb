@@ -1,32 +1,45 @@
+import NotFound from "../errors/NotFound.js";
 import { group } from "../models/Group.js";
 
 class GroupController {
-  static async listGroups(req, res) {
+  static async listGroups(req, res, next) {
     try {
       const groupsList = await group.find({});
       res.status(200).json(groupsList);
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async listGroupById(req, res) {
+  static async listGroupById(req, res, next) {
     try {
       const id = req.params.id;
       const foundGroup = await group.findById(id);
-      res.status(200).json(foundGroup);
+
+      if (foundGroup !== null) {
+        res.status(200).json(foundGroup);
+      } else {
+        next(new NotFound("Id not found"));
+      }
+
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 
-  static async listGroupBySchoolId(req, res) {
+  static async listGroupBySchoolId(req, res, next) {
     try {
       const schoolId = req.query.schoolId;
       const foundGroup = await group.find({ schoolId: schoolId });
-      res.status(200).json(foundGroup);
+
+      if(foundGroup !== null) {
+        res.status(200).json(foundGroup);
+      } else {
+        next(new NotFound("Group not found by School Id"));
+      }
+
     } catch (error) {
-      res.status(500).json({ message: `${error.message} - Couldn't retrieve` });
+      next(error);
     }
   }
 

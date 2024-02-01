@@ -8,7 +8,6 @@ routes
   .get("/students/search", StudentController.listStudentByName)
   .get("/students/group", StudentController.listStudentFromGroup)
   .get("/students/:id", StudentController.listStudentById)
-  .get("/students/group/:groupid", StudentController.listStudentsFromGroupId)
   .post("/students", StudentController.createStudent)
   .put("/students/:id", StudentController.updateStudent)
   .delete("/students/:id", StudentController.deleteStudent);
