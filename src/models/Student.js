@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { validate } from "gerador-validador-cpf";
+import pkg from "gerador-validador-cpf";
+const { validate } = pkg;
 
 const studentSchema = new mongoose.Schema(
   {
@@ -25,7 +26,9 @@ const studentSchema = new mongoose.Schema(
           return /^[0-9]{10,11}$/.test(value);
         },
         message: (props) =>
-          `${props.value} não é um número de telefone válido! O formato deve conter apenas dígitos e ter entre 10 e 11 caracteres. / not a valid Brazilian phone number! The format must contain only digits between 10 and 11 characters.`,
+          `${props.value} não é um número de telefone válido! O formato deve conter apenas 
+          dígitos e ter entre 10 e 11 caracteres. / not a valid Brazilian phone number! 
+          The format must contain only digits and be between 10 and 11 characters.`,
       },
     },
     address: { type: String },

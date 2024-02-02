@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { validate } from "gerador-validador-cpf";
+import pkg from "gerador-validador-cpf";
+const { validate } = pkg;
 
 const teacherSchema = new mongoose.Schema(
   {
