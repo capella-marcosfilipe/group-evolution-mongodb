@@ -4,9 +4,13 @@
 
 ## 💻 Dependencies
 
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "gerador-validador-cpf": "^5.0.2",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
+    "nodemon": "^3.0.2"
+    "eslint": "^8.56.0",
 
 ## 📝 About the project
 
