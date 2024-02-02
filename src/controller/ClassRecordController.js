@@ -1,11 +1,30 @@
 import NotFound from "../errors/NotFound.js";
 import { classRecord } from "../models/ClassRecord.js";
+import IncorrectRequest from "../errors/IncorrectRequest.js";
 
 class ClassRecordController {
   static async listClassRecords(req, res, next) {
     try {
-      const classRecords = await classRecord.find({}).populate("author").exec();
-      res.status(200).json(classRecords);
+      let { limit = 10, page = 1, orderBy = "date:-1" } = req.query;
+
+      let [orderingField, order] = orderBy.split(":");
+
+      limit = parseInt(limit);
+      page = parseInt(page);
+      order = parseInt(order);
+
+      if (limit > 0 && page > 0) {
+        const classRecords = await classRecord
+          .find({})
+          .sort({ [orderingField]: order })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .populate("author")
+          .exec();
+        res.status(200).json(classRecords);
+      } else {
+        next(new IncorrectRequest());
+      }
     } catch (error) {
       next(error);
     }
@@ -61,12 +80,10 @@ class ClassRecordController {
       const id = req.params.id;
       await classRecord.findByIdAndUpdate(id, req.body);
       const updatedClassRecord = await classRecord.findById(id);
-      res
-        .status(200)
-        .json({
-          message: "ClassRecord updated",
-          updatedClassRecord: updatedClassRecord,
-        });
+      res.status(200).json({
+        message: "ClassRecord updated",
+        updatedClassRecord: updatedClassRecord,
+      });
     } catch (error) {
       next(error);
     }
@@ -77,12 +94,10 @@ class ClassRecordController {
       const id = req.params.id;
       const deletedClassRecord = await classRecord.findById(id);
       await classRecord.findByIdAndDelete(id);
-      res
-        .status(200)
-        .json({
-          message: "ClassRecord deleted",
-          deletedClassRecord: deletedClassRecord,
-        });
+      res.status(200).json({
+        message: "ClassRecord deleted",
+        deletedClassRecord: deletedClassRecord,
+      });
     } catch (error) {
       next(error);
     }
