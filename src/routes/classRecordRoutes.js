@@ -5,8 +5,7 @@ const routes = express.Router();
 
 routes
   .get("/class-records", ClassRecordController.listClassRecords)
-  .get("/class-records/group", ClassRecordController.listClassRecordsFromGroup)
-  .get("/class-records/author", ClassRecordController.listClassRecordsFromAuthor)
+  .get("/class-records/search", ClassRecordController.listClassRecordsByFilter)
   .get("/class-records/:id", ClassRecordController.listClassRecordById)
   .post("/class-records", ClassRecordController.createClassRecord)
   .put("/class-records/:id", ClassRecordController.updateClassRecord)

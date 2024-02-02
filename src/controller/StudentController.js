@@ -44,7 +44,7 @@ class StudentController {
     }
   }
 
-  static async listStudentFromGroup(req, res, next) {
+  static async listStudentsFromGroup(req, res, next) {
     try {
       const group = req.query.id;
       const matchingStudents = await student.find({ group: group });
