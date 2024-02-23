@@ -25,5 +25,5 @@ I wish to make it a full-stack project. I want to create a full diary for privat
 So far, those are my steps:
 
 - [x] Create an API for MongoDB;
-- [ ] Create a web interface in Bootstrap;
+- [ ] Create an interface in React.js;
 - [ ] Publish it.
